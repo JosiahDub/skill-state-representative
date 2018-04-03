@@ -10,19 +10,20 @@ from mycroft import MycroftSkill, intent_handler
 class StateRepresentativeSkill(MycroftSkill):
     def __init__(self):
         super(StateRepresentativeSkill, self).__init__(name="StateRepresentativeSkill")
-        self.url = 'https://whoismyrepresentative.com/getall_mems.php'
+        self.all_url = 'https://whoismyrepresentative.com/getall_mems.php'
+        self.reps_url = 'https://whoismyrepresentative.com/getall_reps_bystate.php'
+        self.sens_url = 'https://whoismyrepresentative.com/getall_sens_bystate.php'
 
     def initialize(self):
         pass
 
     @intent_handler(IntentBuilder("")
-                    .require('StateRepresentativeKeyword')
-                    .require('zip')
-                    )
-    def handle_state_representative(self, message):
-        print("in state rep")
+                    .require('congress')
+                    .require('zip'))
+    def handle_all_congress(self, message):
+        print("state: ", self.location['city']['state']['code'])
         zip_code = message.data.get("zip")
-        result = requests.get(self.url, params={"zip": zip_code,
+        result = requests.get(self.all_url, params={"zip": zip_code,
                                                 "output": 'json'})
         if result.status_code == 200:
             content = json.loads(result.content)["results"]
@@ -46,6 +47,19 @@ class StateRepresentativeSkill(MycroftSkill):
         elif len(sens) == 2:
             dialog += " Your senators are " + self.oxford_comma(sens) + "."
         self.speak(dialog)
+
+    @intent_handler(IntentBuilder("")
+                    .require('senator')
+                    .optionally('state')
+                    .optionally('zip'))
+    def handle_senator(self, message):
+        pass
+
+    @intent_handler(IntentBuilder("")
+                    .require('congress')
+                    .optionally('zip'))
+    def handle_representatives(self, message):
+        pass
 
     @staticmethod
     def oxford_comma(name_list):
