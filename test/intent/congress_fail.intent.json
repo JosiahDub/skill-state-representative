@@ -1,0 +1,9 @@
+{
+  "utterance": "Who are my congresswomen in 99999",
+  "intent_type": "AllCongressIntent",
+  "intent": {
+    "congress": "congresswomen",
+    "zip": "99999"
+  },
+  "expected_response": "I could not find any congresspeople."
+}

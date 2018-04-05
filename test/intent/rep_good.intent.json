@@ -1,0 +1,8 @@
+{
+  "utterance": "Who is my representative in 90210",
+  "intent_type": "RepresentativeIntent",
+  "intent": {
+    "representative": "representative",
+    "zip": "90210"
+  }
+}

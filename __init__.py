@@ -35,6 +35,8 @@ class StateRepresentativeSkill(MycroftSkill):
             dialog += " Your senator is " + sens[0] + "."
         elif len(sens) == 2:
             dialog += " Your senators are " + self.oxford_comma(sens) + "."
+        if not dialog:
+            dialog = 'I could not find any congresspeople.'
         self.speak(dialog)
 
     @intent_handler(IntentBuilder("SenatorIntent")
@@ -52,24 +54,40 @@ class StateRepresentativeSkill(MycroftSkill):
             state = self.location['city']['state']['code']
             sens = self.get_senators(state=state)
         dialog = ''
-        if len(sens) == 1:
+        num_sens = len(sens)
+        if num_sens == 0:
+            dialog = 'I could not find any senators.'
+        elif num_sens == 1:
             dialog += " Your senator is " + sens[0] + "."
-        elif len(sens) == 2:
+        elif num_sens == 2:
             dialog += " Your senators are " + self.oxford_comma(sens) + "."
         self.speak(dialog)
 
     @intent_handler(IntentBuilder("RepresentativeIntent")
                     .require('representative')
-                    .optionally('zip'))
+                    .require('zip'))
     def handle_representatives(self, message):
-        self.speak('Write it idiot')
+        zip_code = message.data.get("zip")
+        reps = self.get_reps(zip_code=zip_code)
+        dialog = ''
+        num_reps = len(reps)
+        if num_reps == 0:
+            dialog = 'I could not find any representatives.'
+        elif num_reps == 1:
+            dialog += "Your representative is " + reps[0] + "."
+        elif num_reps > 1:
+            dialog += "Your representatives are " + self.oxford_comma(reps) + "."
+        self.speak(dialog)
 
     def get_senators(self, state=None, zip_code=None):
         if state is not None:
             result = requests.get(self.sens_url, params={"state": state,
                                                          "output": 'json'})
             if result.status_code == 200:
-                content = json.loads(result.content)["results"]
+                try:
+                    content = json.loads(result.content)["results"]
+                except ValueError:
+                    content = {}
             else:
                 # handle it
                 content = {}
@@ -78,7 +96,10 @@ class StateRepresentativeSkill(MycroftSkill):
             result = requests.get(self.all_url, params={"zip": zip_code,
                                                         "output": 'json'})
             if result.status_code == 200:
-                content = json.loads(result.content)["results"]
+                try:
+                    content = json.loads(result.content)["results"]
+                except ValueError:
+                    content = {}
             else:
                 content = {}
             sens = []
@@ -92,7 +113,10 @@ class StateRepresentativeSkill(MycroftSkill):
             result = requests.get(self.reps_url, params={"state": state,
                                                          "output": 'json'})
             if result.status_code == 200:
-                content = json.loads(result.content)["results"]
+                try:
+                    content = json.loads(result.content)["results"]
+                except ValueError:
+                    content = {}
             else:
                 # handle it
                 content = {}
@@ -101,7 +125,10 @@ class StateRepresentativeSkill(MycroftSkill):
             result = requests.get(self.all_url, params={"zip": zip_code,
                                                         "output": 'json'})
             if result.status_code == 200:
-                content = json.loads(result.content)["results"]
+                try:
+                    content = json.loads(result.content)["results"]
+                except ValueError:
+                    content = {}
             else:
                 # handle it
                 content = {}
@@ -182,7 +209,5 @@ STATE_ABBREV = {
 }
 
 
-
 def create_skill():
     return StateRepresentativeSkill()
-

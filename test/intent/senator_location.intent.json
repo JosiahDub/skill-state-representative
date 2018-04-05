@@ -1,0 +1,7 @@
+{
+  "utterance": "Who are my senators",
+  "intent_type": "SenatorIntent",
+  "intent": {
+    "senator": "senators"
+  }
+}

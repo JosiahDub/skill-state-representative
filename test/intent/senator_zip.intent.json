@@ -1,0 +1,8 @@
+{
+  "utterance": "Who are my senators in 90210",
+  "intent_type": "SenatorIntent",
+  "intent": {
+    "senator": "senator",
+    "zip": "90210"
+  }
+}

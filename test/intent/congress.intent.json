@@ -1,0 +1,8 @@
+{
+  "utterance": "Who are my congresspeople in 90210",
+  "intent_type": "AllCongressIntent",
+  "intent": {
+    "congress": "congresspeople",
+    "zip": "90210"
+  }
+}
