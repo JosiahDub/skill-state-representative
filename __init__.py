@@ -10,6 +10,17 @@ from mycroft import MycroftSkill, intent_handler
 
 
 class StateRepresentativeSkill(MycroftSkill):
+    """
+    Gives you information about your state congresspeople based on your zip code or state.
+
+    Uses the API from whoismyrepresentative.com. ProPublica has a better and more comprehensive API,
+    however it requires an API key and cannot be queried by zip code.
+
+    Future improvements:
+    * Narrowing down the representatives based on address or GPS.
+    * Returning more info such as phone numbers, addresses, and party affiliations.
+    * Giving local representatives such as state senators, mayors, etc.
+    """
     def __init__(self):
         super(StateRepresentativeSkill, self).__init__(name="StateRepresentativeSkill")
         self.all_url = 'https://whoismyrepresentative.com/getall_mems.php'
